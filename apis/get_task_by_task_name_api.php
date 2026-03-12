@@ -12,8 +12,11 @@ require_once "../models/j_005.php";
 $connDB = new ConnectDB();
 $j_005 = new J_005($connDB->getConnectDB());
 
-//ทำวานตามวัตถุประลงค์ของ api
-$result = $j_005->getAllTask();
+//สร้างตัวแปรรับข้อมูลมาจากการเรียกใช้ api
+$data = json_decode(file_get_contents("php://input"));
+
+//ทำงานตามวัตถุประลงค์ของ api
+$result = $j_005->getTaskByTaskName($data->taskName);
 
 //ตรวจสอลผลลัพธ์ที่ได้จากการทำงานกับตาราง
 if ($result->rowCount() > 0) {
@@ -27,7 +30,7 @@ if ($result->rowCount() > 0) {
             "taskName" => $row["taskName"],
             "taskDetails" => $row["taskDetails"],
             "taskStatus" => $row["taskStatus"],
-            "createAt" => $row["createAt"]
+            "createAt" => $row["createAt"],
         );
         array_push($dataInfo, $dataArray);
     }
